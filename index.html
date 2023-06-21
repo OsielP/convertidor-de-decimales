@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculadora de Conversión</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-image: url("img/fondo.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh; /* Ajusta el cuerpo para ocupar el 100% del alto de la ventana */
+  margin: 0; /* Elimina los márgenes predeterminados del cuerpo */
+}
+
+
+    h1 {
+      margin-top: 50px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-weight: bold;
+    }
+
+    /* Estilos para los colores numéricos */
+    .color-numerico {
+      padding: 5px;
+      border-radius: 5px;
+      display: inline-block;
+      margin: 5px;
+    }
+
+    /* Estilos para la tabla de conversión */
+    .conversion-table {
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Conversión</h1>
+  
+  <input type="number" id="decimal" placeholder="Ingresa un número decimal">
+  <button onclick="convertir()">Convertir</button>
+
+  <div id="result"></div>
+
+  <script>
+    function convertir() {
+      var decimal = document.getElementById("decimal").value;
+
+      if (decimal === "") {
+        alert("Ingresa un número decimal válido");
+        return;
+      }
+
+      decimal = parseInt(decimal);
+
+      if (isNaN(decimal)) {
+        alert("Ingresa un número decimal válido");
+        return;
+      }
+
+      var conversionTypes = [
+        { name: "Binario", value: decimal.toString(2), color: "#ffcc00" },
+        { name: "Hexadecimal", value: decimal.toString(16), color: "#00ccff" },
+        { name: "Octal", value: decimal.toString(8), color: "#ff6600" },
+        { name: "Base-64", value: btoa(decimal.toString()), color: "#99ff33" },
+        { name: "Romano", value: convertirARomano(decimal), color: "#ff99cc" },
+        { name: "Fracción", value: convertirAFraccion(decimal), color: "#3366ff" }
+      ];
+
+      var resultHtml = "";
+
+      // Obtener los 5 números menores al número ingresado
+      for (var i = decimal - 1; i >= decimal - 5; i--) {
+        resultHtml += obtenerConversionHtml(i);
+      }
+
+      // Agregar la conversión del número ingresado
+      resultHtml += obtenerConversionHtml(decimal, true);
+
+      // Obtener los 5 números mayores al número ingresado
+      for (var i = decimal + 1; i <= decimal + 5; i++) {
+        resultHtml += obtenerConversionHtml(i);
+      }
+
+      document.getElementById("result").innerHTML = resultHtml;
+    }
+
+    function obtenerConversionHtml(numero, resaltar) {
+      var conversionTypes = [
+        { name: "Binario", value: numero.toString(2), color: "#ffcc00" },
+        { name: "Hexadecimal", value: numero.toString(16), color: "#00ccff" },
+        { name: "Octal", value: numero.toString(8), color: "#ff6600" },
+        { name: "Base-64", value: btoa(numero.toString()), color: "#99ff33" },
+        { name: "Romano", value: convertirARomano(numero), color: "#ff99cc" },
+        { name: "Fracción", value: convertirAFraccion(numero), color: "#3366ff" }
+      ];
+
+      var resultHtml = '<div class="color-numerico" style="background-color:' + (resaltar ? "#ff0000" : "#cccccc") + '">';
+      resultHtml += '<h3>Número: ' + numero + '</h3>';
+      resultHtml += '<table class="conversion-table">';
+
+      for (var i = 0; i < conversionTypes.length; i++) {
+        var conversion = conversionTypes[i];
+        resultHtml += '<tr>';
+        resultHtml += '<td>' + conversion.name + '</td>';
+        resultHtml += '<td style="background-color:' + conversion.color + '">' + conversion.value + '</td>';
+        resultHtml += '</tr>';
+      }
+
+      resultHtml += '</table>';
+      resultHtml += '</div>';
+
+      return resultHtml;
+    }
+
+    function convertirARomano(decimal) {
+      // Implementación básica para convertir a números romanos
+      var romanos = [
+        { decimal: 1000, romano: 'M' },
+        { decimal: 900, romano: 'CM' },
+        { decimal: 500, romano: 'D' },
+        { decimal: 400, romano: 'CD' },
+        { decimal: 100, romano: 'C' },
+        { decimal: 90, romano: 'XC' },
+        { decimal: 50, romano: 'L' },
+        { decimal: 40, romano: 'XL' },
+        { decimal: 10, romano: 'X' },
+        { decimal: 9, romano: 'IX' },
+        { decimal: 5, romano: 'V' },
+        { decimal: 4, romano: 'IV' },
+        { decimal: 1, romano: 'I' }
+      ];
+
+      var resultado = '';
+
+      for (var i = 0; i < romanos.length; i++) {
+        while (decimal >= romanos[i].decimal) {
+          resultado += romanos[i].romano;
+          decimal -= romanos[i].decimal;
+        }
+      }
+
+      return resultado;
+    }
+
+    function convertirAFraccion(decimal) {
+      // Implementación básica para convertir a fracción
+      return decimal + '/1';
+    }
+  </script>
+</body>
+</html>
